@@ -3,6 +3,15 @@ name = "solcrypt"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "solcrypt_main"
+path = "src/encrypt.rs"
+
+[[bin]]
+name = "decryptor"
+path = "src/decrypt.rs"
+
+
 [dependencies]
 aes = "0.7.5"
 block-modes = "0.8.1"

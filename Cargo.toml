@@ -1,0 +1,10 @@
+[package]
+name = "solcrypt"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+aes = "0.7.5"
+block-modes = "0.8.1"
+hex = "0.4.3"
+rand = "0.8.5"

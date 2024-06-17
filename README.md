@@ -14,3 +14,10 @@ bash build.sh # this builds both encryptor and decryptor
 ```
 Then run it on your target PC/server
 
+## Roadmap
+- [x] Basic home directory encryption
+- [x] Randomly generated encryption key
+- [ ] Randomly generate key at runtime
+- [ ] Server
+- [ ] Meow?
+

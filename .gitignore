@@ -1,2 +1,5 @@
 /target
 /testfiles
+/server/target
+/server/src/prisma.rs
+/server/prisma/migrations/

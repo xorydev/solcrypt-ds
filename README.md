@@ -17,7 +17,7 @@ Then run it on your target PC/server
 ## Roadmap
 - [x] Basic home directory encryption
 - [x] Randomly generated encryption key
-- [ ] Ransom prompt?
-- [ ] Server
+- [x] Ransom prompt?
+- [x] Server
 - [ ] Meow?
 

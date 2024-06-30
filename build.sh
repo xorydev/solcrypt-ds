@@ -13,18 +13,18 @@ select opt in "${options[@]}"
 do
     case $opt in
         "Windows")
-            cargo build --bin solcrypt_main --target x86_64-pc-windows-gnu
-            cargo build --bin decryptor --target x86_64-pc-windows-gnu
+            cargo build --bin solcrypt_main --target x86_64-pc-windows-gnu --release
+            cargo build --bin decryptor --target x86_64-pc-windows-gnu --release
             ;;
         "Linux")
-            cargo build --bin solcrypt_main --target x86_64-unknown-linux-gnu
-            cargo build --bin decryptor --target x86_64-unknown-linux-gnu
+            cargo build --bin solcrypt_main --target x86_64-unknown-linux-gnu --release
+            cargo build --bin decryptor --target x86_64-unknown-linux-gnu --release
             ;;
         "Both")
-            cargo build --bin solcrypt_main --target x86_64-pc-windows-gnu
-            cargo build --bin decryptor --target x86_64-pc-windows-gnu
-            cargo build --bin solcrypt_main --target x86_64-unknown-linux-gnu
-            cargo build --bin decryptor --target x86_64-unknown-linux-gnu
+            cargo build --bin solcrypt_main --target x86_64-pc-windows-gnu --release
+            cargo build --bin decryptor --target x86_64-pc-windows-gnu --release
+            cargo build --bin solcrypt_main --target x86_64-unknown-linux-gnu --release
+            cargo build --bin decryptor --target x86_64-unknown-linux-gnu --release
             ;;
         "Quit")
             mv src/crypto.rs.bak src/crypto.rs

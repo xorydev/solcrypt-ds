@@ -19,5 +19,7 @@ Then run it on your target PC/server
 - [x] Randomly generated encryption key
 - [x] Ransom prompt?
 - [x] Server
+- [ ] Payment website
+- [ ] Payment website communicating with C2
 - [ ] Meow?
 

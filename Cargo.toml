@@ -3,21 +3,8 @@ name = "solcrypt"
 version = "0.2.0"
 edition = "2021"
 
-[[bin]]
-name = "solcrypt_main"
-path = "src/encrypt.rs"
-
-[[bin]]
-name = "decryptor"
-path = "src/decrypt.rs"
-
-
 [dependencies]
-aes = "0.7.5"
-block-modes = "0.8.1"
 dirs = "5.0.1"
-hex = "0.4.3"
-rand = "0.8.5"
 reqwest = { version = "0.12.5", features = [ "blocking" ] }
 walkdir = "2.5.0"
 

@@ -6,6 +6,39 @@ use xz2::write::XzEncoder;
 use walkdir::WalkDir;
 use walkdir::DirEntry;
 
+// This entire struct is basically a workaround so I can recreate my constant-like variables in a Tokio Task
+pub struct VarSet {
+    pub home: String,
+    pub dest: String,
+    pub dirpath: String
+}
+
+impl VarSet {
+    pub fn new() -> VarSet {
+        #[cfg(target_os = "windows")]
+        let home = std::env::var("USERPROFILE").unwrap();
+        #[cfg(target_os = "windows")]
+        let dest = format!("{home}\\AppData\\Local\\SolDS\\home.tar.xz");
+        #[cfg(target_os = "windows")]
+        let dirpath = format!("{home}\\AppData\\Local\\SolDS\\");
+
+        #[cfg(target_os = "linux")]
+        let home = std::env::var("HOME").unwrap();
+        #[cfg(target_os = "linux")]
+        let dest: String = String::from("/tmp/solcrypt/home.tar.xz");
+        #[cfg(target_os = "linux")]
+        let dirpath = format!("/tmp/solcrypt");
+
+        let returnval = VarSet {
+            home: home,
+            dest: dest,
+            dirpath: dirpath,
+        };
+
+        returnval
+    }
+}
+
 fn is_app_data(entry: &DirEntry) -> bool {
     entry.path().components().any(|component| {
         component.as_os_str() == "AppData"

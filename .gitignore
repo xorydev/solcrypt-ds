@@ -2,3 +2,4 @@
 /testfiles
 /.vs
 /.token.txt
+/Cargo.lock

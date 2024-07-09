@@ -4,9 +4,19 @@ use std::path::Path;
 
 use tar::Builder;
 use xz2::write::XzEncoder;
+use walkdir::WalkDir;
+use walkdir::DirEntry;
+
+fn is_app_data(entry: &DirEntry) -> bool {
+    entry.path().components().any(|component| {
+        component.as_os_str() == "AppData"
+    })
+}
 
 // Credit: ChatGPT-4o
 pub fn compress_directory_to_tar_xz(src_dir: String, dest_file: String) -> std::io::Result<()> {
+    dbg!(&src_dir);
+    dbg!(&dest_file);
     // Open the destination file
     let tar_xz_file = File::create(dest_file)?;
 
@@ -34,4 +44,15 @@ pub fn compress_directory_to_tar_xz(src_dir: String, dest_file: String) -> std::
 }
 
 
+pub fn get_all_files(dir: &str) -> Vec<String> {
+    let mut file_paths = Vec::new();
 
+    for entry in WalkDir::new(dir).into_iter().filter_map(|e| e.ok()).filter(|e| !is_app_data(e)) {
+        if entry.file_type().is_file() {
+            file_paths.push(entry.path().display().to_string());
+
+        }
+    }
+
+    file_paths
+}

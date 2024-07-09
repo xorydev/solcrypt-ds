@@ -1,6 +1,5 @@
 use std::fs::File;
 use std::io::BufWriter;
-use std::path::Path;
 
 use tar::Builder;
 use xz2::write::XzEncoder;

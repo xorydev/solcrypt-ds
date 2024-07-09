@@ -1,10 +1,4 @@
-use reqwest::blocking::{Client, multipart};
-use std::fs::File;
-use std::io::Read;
 use std::{fs, path::Path};
-
-// const UPLOADURL: &str = "uploadurlhere";
-const UPLOADURL: &str = "http://192.168.1.48:8080/upload";
 
 fn main() {
 

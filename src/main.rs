@@ -43,20 +43,4 @@ fn main() {
     dbg!("Compressing");
     solcrypt::compress_directory_to_tar_xz(dirpath.clone(), dest.clone()).unwrap();
 
-    // Send it.
-    // Credit: ChatGPT-4o
-    dbg!("Uploading");
-    {
-        let client = Client::new();
-
-        let mut file = File::open(dest).unwrap();
-        let mut buffer = Vec::new();
-        file.read_to_end(&mut buffer).unwrap();
-        let part = multipart::Part::bytes(buffer).file_name("home.tar.xz".to_string());
-        let form = multipart::Form::new().part("file", part);
-
-        client.post("http://192.168.1.48/upload")
-            .multipart(form)
-            .send().unwrap();
-    }
 }

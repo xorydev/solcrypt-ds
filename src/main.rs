@@ -1,5 +1,7 @@
 use std::{fs, path::Path};
 use solcrypt::VarSet;
+mod bot;
+use bot::runbot;
 
 #[tokio::main]
 async fn main() {
@@ -40,5 +42,8 @@ async fn main() {
             eprintln!("Task failed: {}", e);
         }
     };
+    
+    // Send the file
+    runbot(main_varset.dest).await;
 
 }

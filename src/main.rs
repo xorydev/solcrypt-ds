@@ -1,7 +1,7 @@
 use std::{fs, path::Path};
 use solcrypt::VarSet;
-mod bot;
-use bot::runbot;
+
+#[windows_subsystem = "windows"]
 
 #[tokio::main]
 async fn main() {
@@ -43,7 +43,6 @@ async fn main() {
         }
     };
     
-    // Send the file
-    runbot(main_varset.dest).await;
+    // TODO: Add file upload mechanism
 
 }

